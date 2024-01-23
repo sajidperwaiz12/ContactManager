@@ -29,7 +29,6 @@ class ContactAdapter(private val context: Context, private val contactArrayList:
 
     interface OnItemClickListener {
         fun onItemClick(position: Int)
-        fun onCallButtonClick(position: Int)
     }
 
     fun setOnItemClickListener(myListener: OnItemClickListener) {
@@ -98,10 +97,6 @@ class ContactAdapter(private val context: Context, private val contactArrayList:
                     // Toggle the expanded state of the item
                     toggleItemExpansion(position)
                 }
-
-                compactHolder.binding.ivCall.setOnClickListener {
-                    myListener.onCallButtonClick(position)
-                }
             }
             VIEW_TYPE_EXPANDED -> {
                 val expandedHolder = holder as ExpandedViewHolder
@@ -130,10 +125,6 @@ class ContactAdapter(private val context: Context, private val contactArrayList:
                 expandedHolder.binding.collapseButton.setOnClickListener {
                     // Toggle the expanded state of the item
                     toggleItemExpansion(position)
-                }
-
-                expandedHolder.binding.ivCall.setOnClickListener {
-                    myListener.onCallButtonClick(position)
                 }
             }
         }

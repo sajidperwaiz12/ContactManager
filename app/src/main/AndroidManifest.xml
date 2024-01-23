@@ -2,7 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.CALL_PHONE"
+        tools:ignore="PermissionImpliesUnsupportedChromeOsHardware" />
 
     <application
         android:allowBackup="true"
@@ -19,8 +20,7 @@
             android:exported="true"
             android:label="@string/title_activity_save_edit"
             android:resizeableActivity="true"
-            android:theme="@style/Theme.ContactApp.NoActionBar"
-            tools:targetApi="24" >
+            android:theme="@style/Theme.ContactApp.NoActionBar" >
 
         </activity>
         <activity

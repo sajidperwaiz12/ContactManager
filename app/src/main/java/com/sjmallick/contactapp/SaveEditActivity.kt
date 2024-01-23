@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.Dialog
 import android.graphics.BitmapFactory
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowManager
 import android.widget.ImageView
@@ -12,6 +11,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.github.dhaval2404.imagepicker.ImagePicker
@@ -19,13 +19,15 @@ import com.sjmallick.contactapp.databinding.ActivitySaveEditBinding
 import com.sjmallick.contactapp.mvvmarch.SaveEditActivityViewModel
 import com.sjmallick.contactapp.roomdb.entity.Contact
 
+@Suppress("DEPRECATION")
 class SaveEditActivity : AppCompatActivity() {
 
     private val binding by lazy {
         ActivitySaveEditBinding.inflate(layoutInflater)
     }
-    private val contact = Contact()
+    private var contact = Contact()
     private lateinit var viewModel: ViewModel
+    private var flag = -1
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,29 +35,26 @@ class SaveEditActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         viewModel = ViewModelProvider(this)[SaveEditActivityViewModel::class.java]
-        val mode = intent.getStringExtra(MainActivity.EXTRA_MODE)
 
-        if (mode == MainActivity.MODE_EDIT) {
-            binding.etName.editText?.setText(intent.getStringExtra("name"))
-            binding.etEmail.editText?.setText(intent.getStringExtra("email"))
-            binding.etPhoneNo.editText?.setText(intent.getStringExtra("phoneNo"))
+        if (intent.hasExtra("FLAG")) {
+            flag = intent.getIntExtra("FLAG", -1)
+            contact = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                intent.getSerializableExtra("DATA", Contact::class.java)!!
+            } else {
+                intent.getSerializableExtra("DATA") as Contact
+            }
 
-            val imageByte = intent.getByteArrayExtra("image")
-            if (imageByte != null)  {
+            binding.btnSave.text = getString(R.string.update_contact)
+
+            val imageByte = contact.profile
+            if (imageByte != null) {
                 val image = BitmapFactory.decodeByteArray(imageByte, 0, imageByte.size)
                 binding.ivProfileImage.setImageBitmap(image)
             }
 
-            val contact = intent.getSerializableExtra("contact") as? Contact
-
-            if (contact != null) {
-                binding.btnSave.setOnClickListener {
-
-//                    val db = DbBuilder.getDb(this)?.contactDao()
-//                        db?.deleteContact(contact)
-//                        db?.updateContact(contact = contact)
-                }
-            }
+            binding.etEmail.editText?.setText(contact.email)
+            binding.etName.editText?.setText(contact.name)
+            binding.etPhoneNo.editText?.setText(contact.phoneNo)
         }
 
         binding.ivProfileImage.setOnLongClickListener {
@@ -93,10 +92,19 @@ class SaveEditActivity : AppCompatActivity() {
             contact.phoneNo = binding.etPhoneNo.editText?.text.toString()
             contact.email = binding.etEmail.editText?.text.toString()
 
-            (viewModel as SaveEditActivityViewModel).storeData(contact) {
-                if (it != null && it > 0) {
-                    Toast.makeText(this, "Contact Saved", Toast.LENGTH_SHORT).show()
-                    finish()
+            if (flag == 1) {
+                (viewModel as SaveEditActivityViewModel).updateData(contact) {
+                     if (it != null && it > 0) {
+                         Toast.makeText(this, it.toString(), Toast.LENGTH_SHORT).show()
+                         finish()
+                     }
+                }
+            } else {
+                (viewModel as SaveEditActivityViewModel).storeData(contact) {
+                    if (it != null && it > 0) {
+                        Toast.makeText(this, "Contact Saved", Toast.LENGTH_SHORT).show()
+                        finish()
+                    }
                 }
             }
         }

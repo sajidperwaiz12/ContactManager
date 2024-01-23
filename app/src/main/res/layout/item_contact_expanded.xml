@@ -47,17 +47,6 @@
 
         </androidx.cardview.widget.CardView>
 
-        <ImageView
-            android:id="@+id/ivCall"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/call"
-            android:layout_margin="4dp"
-            android:contentDescription="@string/call_button"
-            app:layout_constraintBottom_toTopOf="@+id/collapseButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <TextView
             android:id="@+id/tvName"
             android:layout_width="0dp"
@@ -112,10 +101,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvPhoneNo" />
 
-        <ImageButton
+        <ImageView
             android:id="@+id/collapseButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
             android:backgroundTint="@color/white"
             android:contentDescription="@string/expand_less"
             android:src="@drawable/expand_less"

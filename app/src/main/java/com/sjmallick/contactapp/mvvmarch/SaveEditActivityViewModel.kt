@@ -15,8 +15,12 @@ class SaveEditActivityViewModel(application: Application) : AndroidViewModel(app
     }
 
     fun storeData(contact: Contact, function : (i: Long?) -> Unit) {
-       val i = repo.insertData(contact)
+        val i = repo.insertData(contact)
         function(i)
+    }
+
+    fun updateData(contact: Contact, function: (i: Int?) -> Unit) {
+        function(repo.updateData(contact))
     }
 
 }
